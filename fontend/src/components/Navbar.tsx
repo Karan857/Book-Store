@@ -1,4 +1,5 @@
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 
 import {
   Accordion,
@@ -22,6 +23,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 interface MenuItem {
   title: string;
@@ -79,7 +82,6 @@ const Navbar = ({
           icon: <Sunset className="size-5 shrink-0" />,
           url: "#",
         },
-
       ],
     },
 
@@ -93,6 +95,27 @@ const Navbar = ({
     signup: { title: "Sign up", url: "#" },
   },
 }: Navbar1Props) => {
+  const [user, setUser] = React.useState<Record<string, any> | null>(null);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (error) {
+        console.error("Invalid token", error);
+        setUser(null);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   return (
     <section className="py-4 px-16">
       <div className="container">
@@ -114,14 +137,27 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
-          </div>
+          {!user && (
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm">
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/register">Register</Link>
+              </Button>
+            </div>
+          )}
+
+          {user && (
+            <div className="flex gap-2">
+              <Button asChild size="sm" variant={"outline"}>
+                <p>{user.username}</p>
+              </Button>
+              <Button asChild size="sm">
+                <h1 onClick={handleLogout}>Logout</h1>
+              </Button>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu */}
