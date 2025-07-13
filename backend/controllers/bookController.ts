@@ -35,7 +35,7 @@ export const createBook = async (req: Request, res: Response) => {
   }
 };
 
-export const getBooks = async (req: Request, res: Response) => {
+export const getNewBooks = async (req: Request, res: Response) => {
   const sql = `
   SELECT b.id AS book_id,
   b.title,
@@ -51,6 +51,31 @@ export const getBooks = async (req: Request, res: Response) => {
   LEFT JOIN category c ON b.category_id = c.id
   ORDER BY b.created_at DESC
   LIMIT 3
+  `;
+
+  try {
+    const result = await pool.query(sql);
+    return res.json({ data: result.rows as BookType[], message: "success" });
+  } catch (error) {
+    console.error("DB error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+export const getAllBooks = async (req: Request, res: Response) => {
+  const sql = `
+  SELECT b.id AS book_id,
+  b.title,
+  b.description,
+  b.status,
+  b.price,
+  b.amount,
+  b.image_url,
+  b.created_at,
+  b.category_id,
+  c.id AS category_id,
+  c.category_name FROM books b
+  LEFT JOIN category c ON b.category_id = c.id
+  ORDER BY b.created_at DESC
   `;
 
   try {

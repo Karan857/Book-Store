@@ -79,7 +79,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
 export const countCategory = async (req: Request, res: Response) => {
   const sql = `
-    SELECT c.category_name ,  count(b.id) as category_count FROM books b
+    SELECT c.category_name, c.id as category_id ,  count(b.id) as category_count FROM books b
     LEFT JOIN category c ON b.category_id = c.id
     GROUP BY c.id
     ORDER BY c.category_name

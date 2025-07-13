@@ -63,6 +63,7 @@ const Navbar = ({
   },
   menu = [
     { title: "หน้าแรก", url: "/" },
+    { title: "หนังสือ", url: "/books" },
     {
       title: "หมวดหมู่",
       url: "#",

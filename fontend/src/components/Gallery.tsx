@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 
 interface BookItem {
-  id: number;
+  book_id: number;
   title: string;
   description: string;
   status: string;
@@ -21,6 +21,8 @@ interface BookItem {
   amount: number;
   created_at: Date;
   image_url: string;
+  category_name: string;
+  category_id: number;
 }
 
 interface BooksType {
@@ -47,9 +49,9 @@ const Gallery = ({ category, items }: BooksType) => {
     };
   }, [carouselApi]);
   return (
-    <section className="m-5">
+    <section className="m-4 !pb-4">
       <div className="container ">
-        <div className="mb-8 flex flex-col justify-between md:mb-14 md:flex-row md:items-end lg:mb-16">
+        <div className="mb-4 flex flex-col justify-between md:mb-14 md:flex-row md:items-end lg:mb-4">
           <div>
             <h2 className="mb-3 text-3xl font-semibold md:mb-4 md:text-4xl lg:mb-6">
               {category}
@@ -81,7 +83,7 @@ const Gallery = ({ category, items }: BooksType) => {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-full">
+      <div className="w-full max-w-full ">
         <Carousel
           setApi={setCarouselApi}
           opts={{
@@ -93,12 +95,12 @@ const Gallery = ({ category, items }: BooksType) => {
           }}
           className="relative w-full max-w-full md:left-[-1rem]"
         >
-          <CarouselContent className="hide-scrollbar w-full max-w-full md:-mr-4 md:ml-8 2xl:ml-[max(8rem,calc(50vw-700px+1rem))] 2xl:mr-[max(0rem,calc(50vw-700px-1rem))]">
+          <CarouselContent className=" hide-scrollbar w-full max-w-full md:-mr-4 md:ml-8 2xl:ml-[max(8rem,calc(50vw-700px+1rem))] 2xl:mr-[max(0rem,calc(50vw-700px-1rem))]">
             {items &&
               items.map((item) => (
                 <CarouselItem
-                  key={item.id}
-                  className="ml-8 md:max-w-[452px] bg-white p-4 rounded-xl shadow-2xl "
+                  key={item.book_id}
+                  className="ml-8 md:max-w-[452px] bg-white p-4 rounded-xl border "
                 >
                   <div>
                     <div className="aspect-3/2 flex overflow-clip rounded-xl ">
@@ -124,7 +126,7 @@ const Gallery = ({ category, items }: BooksType) => {
                   </div>
                   <div className="flex items-center text-sm  mt-2">
                     <Button className="bg-green-700">
-                      <Link to={`book/${item.id}`}>รายละเอียด</Link>
+                      <Link to={`book/${item.book_id}`}>รายละเอียด</Link>
                     </Button>
                   </div>
                 </CarouselItem>
