@@ -7,5 +7,6 @@ router.get("/", categoryController.getCategory);
 router.post("/", categoryController.createCategory);
 router.patch("/:id", categoryController.updateCategory);
 router.delete("/:id", categoryController.deleteCategory);
+router.get("/count", categoryController.countCategory);
 
 export default router;

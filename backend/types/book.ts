@@ -7,6 +7,7 @@ export interface BookType {
   amount: number;
   category_id: number;
   created_at: Date;
+  image_url: string;
 }
 export interface createBookType {
   title: string;
@@ -16,4 +17,5 @@ export interface createBookType {
   amount: number;
   category_id: number;
   created_at: Date;
+  image_url: string;
 }

@@ -67,12 +67,32 @@ export const deleteCategory = async (req: Request, res: Response) => {
       return res.status(200).json(`category id : ${id} is not found`);
     }
 
-    return res
-      .status(200)
-      .json({
-        message: `Delete  category id : ${id} success!!`,
-        data: response.rows[0],
-      });
+    return res.status(200).json({
+      message: `Delete  category id : ${id} success!!`,
+      data: response.rows[0],
+    });
+  } catch (error) {
+    console.error("Insert Error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const countCategory = async (req: Request, res: Response) => {
+  const sql = `
+    SELECT c.category_name ,  count(b.id) as category_count FROM books b
+    LEFT JOIN category c ON b.category_id = c.id
+    GROUP BY c.id
+    ORDER BY c.category_name
+  `;
+
+  try {
+    const response = await pool.query(sql);
+
+    if (response.rowCount == 0) {
+      return res.status(200).json(`not found`);
+    }
+
+    return res.status(200).json(response.rows);
   } catch (error) {
     console.error("Insert Error:", error);
     return res.status(500).json({ message: "Internal Server Error" });

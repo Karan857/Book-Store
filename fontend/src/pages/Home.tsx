@@ -1,76 +1,57 @@
 import React from "react";
-import Banner from "../components/Banner";
-import TableListBook from "../components/TableListBook";
 import Hero from "@/components/Hero";
-import Gallery from "@/components/Gallery";
 
 import api from "../core/axios";
+import Search from "@/components/Search";
+import Blog from "@/components/Blog";
 
-interface GalleryItem {
-  id: string;
+interface BookItem {
+  book_id: number;
   title: string;
+  description: string;
+  status: string;
   price: number;
   amount: number;
-  image: string;
+  created_at: Date;
+  image_url: string;
+  category_name: string;
+  category_id: number;
 }
 
-interface Gallery6Props {
-  heading: string;
-  items: GalleryItem[];
+interface CountCategoryType {
+  category_name : string;
+  category_count : number;
 }
 
 export default function Home() {
-  const mockGalleryItems: Gallery6Props = {
-    heading: "fantazy",
-    items: [
-      {
-        id: "1",
-        title: "Sunset Overdrive",
-        price: 1200,
-        amount: 5,
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-      },
-      {
-        id: "2",
-        title: "Mountain Escape",
-        price: 950,
-        amount: 3,
-        image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca",
-      },
-      {
-        id: "3",
-        title: "City Lights",
-        price: 1500,
-        amount: 2,
-        image: "https://images.unsplash.com/photo-1499346030926-9a72daac6c63",
-      },
-      {
-        id: "4",
-        title: "Forest Walk",
-        price: 800,
-        amount: 7,
-        image: "https://images.unsplash.com/photo-1444065381814-865dc9da92c0",
-      },
-      {
-        id: "5",
-        title: "Ocean Breeze",
-        price: 1100,
-        amount: 4,
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-      },
-    ],
-  };
-
-  const [data, setData] = React.useState([]);
-
+  const [books, setBooks] = React.useState<BookItem[]>([]);
+  const [countCategory, setCountCategory] = React.useState<CountCategoryType[]>([]);
+  const [categories, setCategories] = React.useState<string[]>([]);
   React.useEffect(() => {
-    api
-      .get("/books")
-      .then((res) => setData(res.data.data))
-      .catch((err) => console.error(err));
+    const fetchBooks = async () => {
+      try {
+        const response = await api.get("/books");
+        const data: BookItem[] = response.data.data;
+        setBooks(data);
+        const categories = [...new Set(data.map((item) => item.category_name))];
+        setCategories(categories);
+      } catch (error) {
+        console.error("Fetch books failed:", error);
+      }
+    };
+    const fetchCountCategory = async () => {
+      try {
+        const response = await api.get("/category/count");
+        const data: CountCategoryType[] = response.data;
+        setCountCategory(data);
+      } catch (error) {
+        console.error("Fetch books failed:", error);
+      }
+    };
+    fetchBooks();
+    fetchCountCategory()
   }, []);
 
-  
   return (
     <div>
       <Hero
@@ -82,10 +63,13 @@ export default function Home() {
           alt: "book_bg",
         }}
       />
-      {/* <Gallery /> */}
-      <div className="bg-white h-32"></div>
 
-      <div className=" flex px-24 py-16 bg-gray-100">
+      <Search categories={categories} />
+
+      <Blog books={books} category={countCategory}/>
+
+      {/* <Gallery /> */}
+      {/* <div className=" flex px-24 py-16 bg-gray-100">
         <div className="flex-1/4  ">
           <div className="flex bg-white flex-col px-16 py-8 w-fit justify-center item-center border-2 rounded-3xl">
             <div className="category-group">
@@ -99,12 +83,16 @@ export default function Home() {
           </div>
         </div>
         <div className="flex-3/4 ">
-          <Gallery
-            heading={mockGalleryItems.heading}
-            items={mockGalleryItems.items}
-          />
+          {data &&
+            data.map((item, index) => (
+              <Gallery
+                category={item.category}
+                items={item.items}
+                key={index}
+              />
+            ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
